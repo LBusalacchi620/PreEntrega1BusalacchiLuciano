@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Mayonesa Hellmans",
+    "description": "Mayonesa por 950g",
+    "price": 900,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/mayonesa_nde5bs.webp",
+    "code": "may01",
+    "stock": 200,
+    "id": 1,
+    "status": "True"
+  },
+  {
+    "title": "Vino Calia",
+    "description": "Vino Malbec por 1L",
+    "price": 1560,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/malbeccalia_csfm9p.webp",
+    "code": "vmk01",
+    "stock": 201,
+    "id": 2,
+    "status": "True"
+  },
+  {
+    "title": "Queso cremoso",
+    "description": "Queso cremoso por 500g",
+    "price": 800,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/quesocremoso_vwdrco.webp",
+    "code": "qcr01",
+    "stock": 202,
+    "id": 3,
+    "status": "True"
+  },
+  {
+    "title": "Queso rayado",
+    "description": "Queso rayado por 300g",
+    "price": 700,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/ralladosancor_erwe3r.webp",
+    "code": "qrr01",
+    "stock": 203,
+    "id": 4,
+    "status": "True"
+  },
+  {
+    "title": "New Style",
+    "description": "Vodka por 1L",
+    "price": 1200,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/vodkanewstyle_m9ldmn.webp",
+    "code": "vdk01",
+    "stock": 204,
+    "id": 5,
+    "status": "True"
+  },
+  {
+    "title": "Speed",
+    "description": "Energizante en lata por 300ml",
+    "price": 250,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/speed_hyctgz.jpg",
+    "code": "eng01",
+    "stock": 205,
+    "id": 6,
+    "status": "True"
+  },
+  {
+    "title": "Aceite Libra",
+    "description": "Aceite de girasol por 1L",
+    "price": 500,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/lira_lkmsfj.webp",
+    "code": "ace01",
+    "stock": 206,
+    "id": 7,
+    "status": "True"
+  },
+  {
+    "title": "Jardinera Okey",
+    "description": "Jardinera por 1Kg",
+    "price": 450,
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/okey_vfc1ym.jpg",
+    "code": "jar01",
+    "stock": 207,
+    "id": 8,
+    "status": "True"
+  }
+]
