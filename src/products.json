@@ -1,82 +1,90 @@
 [
   {
+    "id": 1,
     "title": "Mayonesa Hellmans",
     "description": "Mayonesa por 950g",
-    "price": 900,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/mayonesa_nde5bs.webp",
     "code": "may01",
+    "price": 900,
+    "status": "True",
     "stock": 200,
-    "id": 1,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/mayonesa_nde5bs.webp"
   },
   {
+    "id": 2,
     "title": "Vino Calia",
     "description": "Vino Malbec por 1L",
-    "price": 1560,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/malbeccalia_csfm9p.webp",
     "code": "vmk01",
+    "price": 1560,
+    "status": "True",
     "stock": 201,
-    "id": 2,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/malbeccalia_csfm9p.webp"
   },
   {
+    "id": 3,
     "title": "Queso cremoso",
     "description": "Queso cremoso por 500g",
-    "price": 800,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/quesocremoso_vwdrco.webp",
     "code": "qcr01",
+    "price": 800,
+    "status": "True",
     "stock": 202,
-    "id": 3,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/quesocremoso_vwdrco.webp"
   },
   {
+    "id": 4,
     "title": "Queso rayado",
     "description": "Queso rayado por 300g",
-    "price": 700,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/ralladosancor_erwe3r.webp",
     "code": "qrr01",
+    "price": 700,
+    "status": "True",
     "stock": 203,
-    "id": 4,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/ralladosancor_erwe3r.webp"
   },
   {
+    "id": 5,
     "title": "New Style",
     "description": "Vodka por 1L",
-    "price": 1200,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/vodkanewstyle_m9ldmn.webp",
     "code": "vdk01",
+    "price": 1200,
+    "status": "True",
     "stock": 204,
-    "id": 5,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/vodkanewstyle_m9ldmn.webp"
   },
   {
+    "id": 6,
     "title": "Speed",
     "description": "Energizante en lata por 300ml",
-    "price": 250,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/speed_hyctgz.jpg",
     "code": "eng01",
+    "price": 250,
+    "status": "True",
     "stock": 205,
-    "id": 6,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/speed_hyctgz.jpg"
   },
   {
+    "id": 7,
     "title": "Aceite Libra",
     "description": "Aceite de girasol por 1L",
-    "price": 500,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/lira_lkmsfj.webp",
     "code": "ace01",
+    "price": 500,
+    "status": "True",
     "stock": 206,
-    "id": 7,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363369/lira_lkmsfj.webp"
   },
   {
+    "id": 8,
     "title": "Jardinera Okey",
     "description": "Jardinera por 1Kg",
-    "price": 450,
-    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/okey_vfc1ym.jpg",
     "code": "jar01",
+    "price": 450,
+    "status": "True",
     "stock": 207,
-    "id": 8,
-    "status": "True"
+    "category": "categoria 1",
+    "thumbnail": "https://res.cloudinary.com/dxf8ebmi7/image/upload/v1679363368/okey_vfc1ym.jpg"
   }
 ]

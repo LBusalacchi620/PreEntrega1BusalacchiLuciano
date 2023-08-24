@@ -1,39 +1,41 @@
-import express from "express";
-import prodsRouter from "./routes/products.routes.js";
-import multer from "multer";
-import { __dirname } from "./path.js";
-import path from "path";
+//IMPORTANTE: Debo ejecutar "npm run dev" en la terminal para poder ver el localhost:8080 en mi navegador
 
+//Importo módulos:
+//Por errores de código que no entendí muy bien, para ver el index.html tuve que importar path y { fileURLToPath }
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+//Importo rutas de mi aplicación:
+import prodsRouter from "./routes/products.routes.js";
+import cartsRouter from "./routes/carts.routes.js";
+
+//Constantes del servidor:
+//Por errores de código que no entendí muy bien, para ver el index.html tuve que crear las constantes __filename y _dirname
 const PORT = 4000;
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-//configuracion de multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "src/public/img"); //null hace referencia a que no envia errores
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${file.originalname}`); //Concateno el nombre original de mi archivo con milisegundos con Date.now()
-  },
-});
+//Middlewares:
+//Para poder trabajar con json. No puedo enviar json desde postman sin esta línea porque express no lo entiende
+app.use(express.json());
+//Para enviar a la url de mi aplicación varias consultas querys al mismo tiempo, querys extensos. Sin esta línea solamente podría enviar un query pequeño
+app.use(express.urlencoded({ extended: true }));
 
-//Middleware
-app.use(express.json()); //permite trabajar con archivos JSON
-app.use(express.urlencoded({ extended: true })); //permite trabajar con multiples consultas a la vez
-const upload = multer({ storage: storage });
-
-//Routes
+//Rutas:
+//Incluyo api porque es una api rest la que quiero generar
+//El api/products puedo definirlo acá o en la carpeta routes, pero se recomienda hacerlo acá para hacerlo una sola vez
+//En lugar de escribir las rutas en app.js, lo hago en la carpeta routes y lo traigo aquí con prodsRouter
+//Necesito SÍ O SÍ el index.html para poder hacer funcionar la ruta "localhost:8080", pero las demás rutas sí funcionan
 app.use("/api/products", prodsRouter);
-app.use("/static", express.static(path.join(__dirname, "/public"))); //con este truquito sorteo el problema de que los diferentes SI usan las barras para direcciones invertidas
-app.post("/upload", upload.single("product"), (req, res) => {
-  console.log(req.file);
-  console.log(req.body);
-  res.status(200).send("Imagen cargada");
-});
-console.log(
-  "Esta es mi dirección en el path:" + path.join(__dirname, "/public")
-);
+app.use("/api/carts", cartsRouter);
+app.use("/static", express.static(path.join(__dirname, "/public")));
 
-app.listen(PORT, () => {
-  console.log(`Server on port ${PORT}`);
-});
+//Inicializo el servidor:
+try {
+  app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
+  });
+} catch (error) {
+  console.error("Error al intentar iniciar el servidor:", error);
+}
