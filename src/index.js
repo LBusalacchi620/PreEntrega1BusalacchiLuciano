@@ -11,7 +11,7 @@ import cartsRouter from "./routes/carts.routes.js";
 
 //Constantes del servidor:
 //Por errores de código que no entendí muy bien, para ver el index.html tuve que crear las constantes __filename y _dirname
-const PORT = 4000;
+const PORT = 8080;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

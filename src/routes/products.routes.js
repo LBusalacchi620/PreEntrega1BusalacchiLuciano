@@ -1,139 +1,100 @@
+//No necesito importar todo el módulo de express en este archivo. Solamente necesito para trabajar las rutas
 import { Router } from "express";
+
+//En vez de crear una variable app, solamente creo la variable de mis rutas
 const prodsRouter = Router();
 
-import ProductManager from "../productManager.js";
-const productManager = new ProductManager("./src/products.json");
+//Importo rutas de mi aplicación
+import ProductManager from "../ProductManager.js";
+const productManager = new ProductManager("./src/productos.json");
 
-//GET para ver todos los productos de products.json, indicando un límite y validándolo
-//Ejemplo para probar la ruta localhost:4000/api/products?limit=1
+//1) GET
+//Método para ver todos los productos. Debo incluir la req.query "?limit" por pedido de la consigna
+//Poner esto en la ruta: localhost:8080/api/products?limit=1
 prodsRouter.get("/", async (req, res) => {
   try {
     const { limit } = req.query;
 
-    //Validación del límite
+    //Validar y asegurarse de que limit sea un número positivo
     const parsedLimit = parseInt(limit);
     if (isNaN(parsedLimit) || parsedLimit <= 0) {
-      return res.status(400).json({ error: "Indique un número válido" });
+      return res
+        .status(400)
+        .json({
+          error: "El parámetro 'limit' debe ser un número positivo válido",
+        });
     }
 
+    //Obtener la lista completa de productos
     const allProducts = await productManager.getProducts();
 
+    //Limitar la lista de productos según el valor proporcionado
     const limitedProducts = allProducts.slice(0, parsedLimit);
 
+    //Enviar la respuesta con los productos limitados
     res.status(200).json(limitedProducts);
   } catch (error) {
-    //mando un mensaje de error a la terminal y a Postman
-    console.error("Hubo un error al procesar la solicitud:", error);
-    res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
+    res.status(500).json(error.message);
   }
 });
 
-//GET(pid = product id)
-//lista el producto indicado por su id
-//Ejemplo para probar la ruta localhost:4000/api/products/1
+//2) GET(pid = product id)
+//Método para consultar por un producto, utilizando su id
+//Poner esto en la ruta: localhost:8080/api/products/1
 prodsRouter.get("/:pid", async (req, res) => {
   try {
-    const pid = req.params.pid;
-    //Error en caso de que ingrese letras
-    if (!/^\d+$/.test(pid)) {
-      return res.status(400).json({ error: "Ingrese un ID numérico y válido" });
-    }
-    const pidAsNumber = parseInt(pid);
-    const product = await productManager.getProductById(pidAsNumber);
-
-    if (product) {
-      res.status(200).json(product);
-    } else {
-      res
-        .status(404)
-        .json({ message: "El ID no corresponde a un producto existente" });
-    }
+    //Como yo tengo el id como número en el json, tengo que parsear acá para que Postman me tome el id como número y no como string
+    //Cuando utilicemos base de datos, el id lo va a autogenerar esa base. En ese caso el id va a ser un string
+    //Las bases de datos les ponen tanto números como letras al id, por eso va a ser un string
+    const pid = parseInt(req.params.pid);
+    const product = await productManager.getProductById(pid);
+    res.status(200).json(product);
   } catch (error) {
-    console.error("Hubo un error al procesar la solicitud:", error);
-    res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
+    res.status(500).json(error.message);
   }
 });
 
-//POST
-//Agregar un producto desde Postman. Escribir el producto entero con todos sus atributos en Postman
-//Ejemplo para probar la ruta: localhost:4000/api/products
+//3) POST
+//Método para agregar un producto desde Postman. Debo escribir el producto entero con todos sus atributos en Postman
+//Poner esto en la ruta: localhost:8080/api/products
 prodsRouter.post("/", async (req, res) => {
   try {
     //Creo una variable newProduct y le envío los datos estándar del cuerpo (Es decir, los datos que tendrán TODOS los productos)
     //Tengo que crear esta variable newProduct porque estoy agregando el nuevo producto desde afuera, desde Postman
     const newProduct = req.body;
-    const existingProductById = await productManager.getProductById(
-      newProduct.id
-    );
-    const existingProductByCode = await productManager.getProductByCode(
-      newProduct.code
-    );
-
-    if (existingProductById || existingProductByCode) {
-      res
-        .status(400)
-        .json({ error: "Ya existe un producto con ese ID o código" });
-    } else {
-      await productManager.addProduct(newProduct);
-      res.status(201).json({ message: "Producto agregado exitosamente" });
-    }
+    await productManager.addProduct(newProduct);
+    res.status(201).json("Producto agregado exitosamente");
   } catch (error) {
-    console.error("Hubo un error al procesar la solicitud:", error);
-    res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
+    res.status(500).json(error.message);
   }
 });
-//PUT(pid = product id)
+
+//4) PUT(pid = product id)
 //Método para actualizar todos los atributos de un producto, utilizando su id
-//Ejemplo para probar la ruta: localhost:4000/api/products/1
+//Poner esto en la ruta: localhost:8080/api/products/1
 prodsRouter.put("/:pid", async (req, res) => {
   try {
-    const pid = req.params.pid;
-    if (!/^\d+$/.test(pid)) {
-      return res
-        .status(400)
-        .json({ error: "El ID del producto debe ser un número" });
-    }
-
-    //Ahora sí parseo, para que Postman me tome como número el pid, y no como string. Sino no me encuentra el producto
-    const pidAsNumber = parseInt(pid);
-    const product = await productManager.getProductById(pidAsInt);
-
-    if (product) {
-      await productManager.updateProduct(pidAsNumber, req.body);
-      res.status(200).json({ message: "Producto actualizado" });
-    } else {
-      res
-        .status(404)
-        .json({ message: "No se encontró un producto con ese ID" });
-    }
+    const pid = parseInt(req.params.pid);
+    //Le paso 2 parámetros: el id para identificar al producto, y el body (resto de los atributos) que va a ser actualizado
+    await productManager.updateProduct(pid, req.body);
+    res.status(200).json("Producto actualizado");
   } catch (error) {
-    console.error("Hubo un error al procesar la solicitud:", error);
-    res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
+    res.status(500).json(error.message);
   }
 });
+
 //5) DELETE(pid = product id)
-//Poner esto en la ruta: localhost:4000/api/products/1
+//Método para eliminar un producto, utilizando su id
+//Poner esto en la ruta: localhost:8080/api/products/1
 prodsRouter.delete("/:pid", async (req, res) => {
   try {
-    const pid = req.params.pid;
-    if (!/^\d+$/.test(pid)) {
-      return res
-        .status(400)
-        .json({ error: "El ID del producto debe ser un número" });
-    }
-    const pidAsNumber = parseInt(pid);
-    const product = await productManager.getProductById(pidAsNumber);
-    if (product) {
-      await productManager.deleteProduct(pidAsNumber);
-      res.status(200).json({ message: "Producto eliminado" });
-    } else {
-      res
-        .status(404)
-        .json({ message: "No se encontró un producto con ese ID" });
-    }
+    const pid = parseInt(req.params.pid);
+    await productManager.deleteProduct(pid);
+    res.status(200).json("Producto eliminado");
   } catch (error) {
-    console.error("Hubo un error al procesar la solicitud:", error);
-    res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
+    res.status(500).json(error.message);
   }
 });
+
+//Cuando es un único elemento de todo el archivo, se utiliza export default. Sino se utiliza export
 export default prodsRouter;

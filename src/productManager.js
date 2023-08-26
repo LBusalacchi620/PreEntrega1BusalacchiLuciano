@@ -1,27 +1,44 @@
 import { promises as fs } from "fs";
 
 class ProductManager {
+  //Paso filePath como parámetro
   constructor(filePath) {
     /*
         Ubico el path como argumento de la clase ProductManager, y no fuera de la clase como hacía antes
         La diferencia es que haciendo esto, puedo utilizar varios path para distintas clases en el mismo archivo
         Estoy definiendo que este path le pertenece a esta clase. filePath es una variable
-        Puedo utilizar esto:
+        1) Puedo utilizar esto:
         const productManager = new ProductManager("./src/productos.json");
-        O esto:
+        2) O esto:
         const filePath = "./src/productos.json";
         const productManager = new ProductManager(filePath);
-        O también se puede poner como argumento this.path = "./src/productos.json" y no pasarle parámetro al constructor
+        3) O también se puede poner como argumento this.path = "./src/productos.json" y no pasarle parámetro al constructor
+        4) O como hice en este código: this.path = filePath y paso el parámetro filePath al constructor
         */
     this.path = filePath;
   }
-  //GET--> devuelve todos los productos de products.JSON
+
+  /*
+    IMPORTANTE:
+    Console.error es para la terminal de vsc - Throw new error es para la terminal de Postman
+    trow new Error me envía el mensaje a los "res.status(500).json(error.message)" del archivo de rutas
+    Pero las respuestas exitosas como "res.status(200).json" no pueden recibir mensajes de nadie
+    En esos casos, hay que poner "res.status(200).json" en el archivo de rutas, y "console.log" acá
+    */
+
+  //1)
   async getProducts() {
     const prods = JSON.parse(await fs.readFile(this.path, "utf-8"));
-    return prods;
+
+    if (prods) {
+      return prods;
+    } else {
+      console.log("No se encontraron los productos");
+      throw new Error("No se encontraron los productos");
+    }
   }
 
-  // Devuelve el producto que coincida con el id en products.JSON
+  //2)
   async getProductById(id) {
     const prods = JSON.parse(await fs.readFile(this.path, "utf-8"));
     const producto = prods.find((prod) => prod.id === id);
@@ -29,71 +46,138 @@ class ProductManager {
     if (producto) {
       return producto;
     } else {
-      return null;
+      console.log("No existe un producto con ese ID");
+      throw new Error("No existe un producto con ese ID");
     }
   }
-  // Lo mismo que el getProductById pero teniendo en cuenta el code
-  async getProductByCode(code) {
-    const prods = JSON.parse(await fs.readFile(this.path, "utf-8"));
-    const producto = prods.find((prod) => prod.code === code);
 
-    if (producto) {
-      return producto;
-    } else {
-      return null;
-    }
-  }
-  // Agrego un producto nuevo, validando que todos los campos estén llenos y que no se repita ni el ID ni el code
+  //3)
   async addProduct(product) {
-    if (
-      !product.title ||
-      !product.description ||
-      !product.price ||
-      !product.code ||
-      !product.status ||
-      !product.stock ||
-      !product.category ||
-      !product.thumbnail
-    ) {
-      console.log("Todos los campos son obligatorios");
-      return;
+    const requiredFields = [
+      "title",
+      "description",
+      "price",
+      "code",
+      "status",
+      "stock",
+      "category",
+      "thumbnail",
+      "id",
+    ];
+
+    const missingField = requiredFields.find((field) => !product[field]);
+
+    if (missingField) {
+      console.log(
+        "Todos los campos son obligatorios. El campo que te falta completar es: " +
+          missingField
+      );
+      throw new Error(
+        "Todos los campos son obligatorios. El campo que te falta completar es: " +
+          missingField
+      );
+    }
+
+    //Cuando creo un nuevo producto desde Postman con todos sus atributos, si pongo "status = false" por defecto Postman no me deja agregar el producto
+    //Es por esta razón que tengo que agregar una verificación en caso de que el status sea false
+    if (product.status === false) {
+      console.log("El estado del producto es false, no se puede agregar");
+      throw new Error("El estado del producto es false, no se puede agregar");
     }
 
     const prods = JSON.parse(await fs.readFile(this.path, "utf-8"));
     const prodId = prods.find((prod) => prod.id === product.id);
     const prodCode = prods.find((prod) => prod.code === product.code);
+
     if (prodId || prodCode) {
       console.log("Ya existe un producto con ese ID o código");
+      throw new Error("Ya existe un producto con ese ID o código");
     } else {
       prods.push(product);
-      await fs.writeFile(this.path, JSON.stringify(prods));
+      //Los parámetros null y 2 se utilizan para mejorar la legibilidad del json
+      //Utilizando estos parámetros no tengo que clickear "format document" cada vez que actualice el json
+      await fs.writeFile(this.path, JSON.stringify(prods, null, 2));
+      console.log("Producto agregado exitosamente");
     }
   }
 
-  //Borro el producto que esté ubicado en donde coincida el id con el id ingresado
+  //4)
+  async updateProduct(id, product) {
+    const requiredFields = [
+      "title",
+      "description",
+      "price",
+      "code",
+      "status",
+      "stock",
+      "category",
+      "thumbnail",
+    ];
+
+    const missingField = requiredFields.find((field) => !product[field]);
+
+    if (missingField) {
+      console.log(
+        "Todos los campos son obligatorios. El campo que te falta completar es: " +
+          missingField
+      );
+      throw new Error(
+        "Todos los campos son obligatorios. El campo que te falta completar es: " +
+          missingField
+      );
+    }
+
+    const prods = JSON.parse(await fs.readFile(this.path, "utf-8"));
+    const indice = prods.findIndex((prod) => prod.id === id);
+
+    if (indice !== -1) {
+      //Guarda el valor del id antes de actualizar el producto
+      const productId = prods[indice].id;
+
+      //Actualiza los campos del producto, excepto el id
+      const updatedProduct = { ...product, id: productId };
+      prods[indice] = updatedProduct;
+
+      await fs.writeFile(this.path, JSON.stringify(prods, null, 2));
+      console.log("Producto actualizado");
+    } else {
+      console.log("No existe un producto con ese ID");
+      throw new Error("No existe un producto con ese ID");
+    }
+  }
+
+  //5)
   async deleteProduct(id) {
     const prods = JSON.parse(await fs.readFile(this.path, "utf-8"));
-    const productoIndex = prods.findIndex((prod) => prod.id === id);
+    const producto = prods.find((prod) => prod.id === id);
 
-    if (productoIndex !== -1) {
-      prods.splice(productoIndex, 1);
-      await fs.writeFile(this.path, JSON.stringify(prods));
+    if (producto) {
+      await fs.writeFile(
+        this.path,
+        JSON.stringify(
+          prods.filter((prod) => prod.id != id),
+          null,
+          2
+        )
+      );
+      console.log("Producto eliminado");
     } else {
-      console.log("Producto no encontrado");
+      console.log("No existe un producto con ese ID");
+      throw new Error("No existe un producto con ese ID");
     }
   }
 }
-// defino la clase product con todos sus campos, el campo status arranca siendo true y el id no se ingresa, sino que se autogenera de manera incremental
+
 class Product {
   constructor(
     title,
     description,
     price,
     code,
+    status,
     stock,
     category,
-    thumbnail,
-    status = true
+    thumbnail
   ) {
     this.title = title;
     this.description = description;
